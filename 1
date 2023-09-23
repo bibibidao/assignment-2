@@ -1,0 +1,48 @@
+# we define 4 funcitons
+# set: set the value of matrix
+# get : get the matrix
+#setInv: set the value of the inverse of a given matrix
+#getInv: get the value of the inverse of a given matrix
+
+makeCacheMatrix <- function(x = numeric(),...){
+  inv <- NULL #indicate the inverse of the given matrix
+  set <- function(y){
+    x <<- y
+    inv <- NULL
+  }
+  get <- function() x
+  setInv <- function(s) inv <<- s
+  getInv <- function() inv
+  list(set = set, get = get,
+       setInv = setInv,
+       getInv = getInv)
+}
+
+
+
+cacheSolve <- function(x,...){
+  inv <- x$getInv()
+  if(!is.null(inv)){
+    message("get cached data")
+    return(inv)
+  }
+  data <- x$get()
+  inv <- solve(data,...)
+  x$setInv(inv)
+  inv
+}
+
+
+#test the function makeCacheMatrix and cacheSolve
+
+
+set.seed(123)
+#here we generate a random matrix with 2000 rows and 2000 columns
+N <- 2000
+Mat <- matrix(rnorm(N*N, 1,2), nr = N)
+
+x <- makeCacheMatrix(x = Mat)
+system.time(cacheSolve(x)) 
+system.time(cacheSolve(x))
+system.time(cacheSolve(x))
+system.time(cacheSolve(x))
